@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tweet
+from .models import Tweet,CustomUser
 from django.contrib.auth.admin import UserAdmin
 #from .models import CustomUser
 #from .forms import CustomUserCreationForm, CustomUserChangeForm
@@ -8,15 +8,38 @@ from django.contrib.auth.admin import UserAdmin
 
 admin.site.register(Tweet)
 
-# class CustomUserAdmin(UserAdmin):
-#     add_form = CustomUserCreationForm
-#     form = CustomUserChangeForm
-#     model = CustomUser
-#     fieldsets = UserAdmin.fieldsets + (
-#         (None, {'fields': ('photo', 'bio', 'following')}),
-#     )
-#     add_fieldsets = UserAdmin.add_fieldsets + (
-#         (None, {'fields': ('photo', 'bio')}),
-#     )
+class CustomUserAdmin(UserAdmin):
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'is_staff', 'photo', 'bio')
 
-# admin.site.register(CustomUser, CustomUserAdmin)
+    fieldsets = (
+        (None, {
+            'fields': ('username', 'password')
+        }),
+        ('Personal info', {
+            'fields': ('first_name', 'last_name', 'email', 'photo', 'bio')
+        }),
+        ('Permissions', {
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser'
+                )
+        }),
+        ('Important dates', {
+            'fields': ('last_login', 'date_joined')
+        }),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'fields': ('username', 'password1', 'password2')
+        }),
+        ('Personal info', {
+            'fields': ('first_name', 'last_name', 'email', 'photo', 'bio')
+        }),
+        ('Permissions', {
+            'fields': (
+                'is_active', 'is_staff', 'is_superuser'              )
+        }),
+    )
+
+admin.site.register(CustomUser, CustomUserAdmin)
