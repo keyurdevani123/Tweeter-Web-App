@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}Chai and tweet{% endblock %}
+
+{% block content %}
+    <h1 class="text-center text-green">Chai Headquarter</h1>
+    
+<a href="{% url 'tweet_create' %}" class="btn btn-primary">Create a tweet</a>
+<div class="container row gap-3">
+  {% for tweet in tweets %}
+  <div class="card" style="width: 19rem; height: auto; overflow: hidden;">
+      {% if tweet.photo %}
+          <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet Image" style="height: 200px; object-fit: cover;">
+      {% endif %}
+      
+      <div class="card-body">
+        <h5 class="card-title" style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
+          <span style="font-weight: bold; color: #007bff; margin-right: 10px;">{{ tweet.user.username }}</span>
+          <span style="color: #6c757d; font-size: 0.9rem;">{{ tweet.created_at }}</span>
+        </h5>        
+        
+        <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+          {{ tweet.text }}
+        </p>
+        {% if tweet.user == user %}
+        <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-secondary btn-sm">Edit</a>
+        <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% endif %}
+        <a href="{% url 'tweet_view' tweet.id %}" class="btn btn-primary btn-sm">View</a>
+      </div>
+  </div>
+  {% endfor %}
+</div>
+ 
+{% endblock %}

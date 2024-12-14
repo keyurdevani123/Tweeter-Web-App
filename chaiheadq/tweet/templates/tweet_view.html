@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Chai and tweet{% endblock %}
+
+{% block content %}
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h1>View tweet page</h1>
+        {% if tweet.photo %}
+            <img src="{{tweet.photo.url}}" class="card-img-top" style="width: 18rem;" alt="...">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{tweet.user.username}}</h5>
+            <p class="card-text">{{tweet.text}}</p>
+            {% if tweet.user == user %}
+            <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+            <a href="{% url 'tweet_list'%}" class="btn btn-primary">Back</a>
+          </div>
+    </form>
+
+{% endblock %}
