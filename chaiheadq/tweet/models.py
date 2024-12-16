@@ -7,7 +7,7 @@ from django.conf import settings
 # User= get_user_model()
 
 class CustomUser(AbstractUser):
-    phone_number= models.CharField(max_length=100,unique=True,default='')
+    phone_number= models.CharField(max_length=100,default='')
     user_bio = models.CharField(max_length=50,default='')
     user_profile_image= models.ImageField(upload_to="profile",default='')
 
