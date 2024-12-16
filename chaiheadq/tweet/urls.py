@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from . import views
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     # path('', views.index, name='index'),
@@ -12,7 +13,14 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     # path('similar/<int:tweet_id>/', views.tweet_similar, name='tweet_similar'),
     path('search/', views.tweet_search, name='tweet_search'),
+    path('user/details/', views.user_details, name='user_details'),
 
+    #reset password urls
+    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    path('password_reset_done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('password_reset_confirm/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('password_reset_complete', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    ########################################
 
     # path('tweet/<int:tweet_id>/', views.tweet_detail, name='tweet_detail'),
 ]

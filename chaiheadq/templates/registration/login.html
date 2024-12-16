@@ -1,13 +1,25 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1 class="text-center text-green">Chai Headquarter</h1>
-    
-    <h2>Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-    <p class="text-center">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4" style="max-width: 400px; width: 100%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <h1 class="text-center text-primary">Chai Headquarter</h1>
+        
+        <h2 class="text-center">Login</h2>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ form.as_p }}
+            
+            <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot Password?</a>
+        </div>
+        
+        <p class="text-center mt-3">
+            Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Register</a>
+        </p>
+    </div>
+</div>
 {% endblock %}

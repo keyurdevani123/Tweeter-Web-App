@@ -5,21 +5,21 @@
 {% block content %}
     <h1 class="text-center text-green">Chai Headquarter</h1>
     
-<a href="{% url 'tweet_create' %}" class="btn btn-primary">Create a tweet</a>
-<div class="container row gap-3">
+{% comment %} <a href="{% url 'tweet_create' %}" class="btn btn-primary">Create a tweet</a> {% endcomment %}
+<div class="container row gap-3)">
   {% for tweet in tweets %}
-  <div class="card" style="width: 19rem; height: auto; overflow: hidden;">
+  <div class="card" style="width: 19rem; height: auto; overflow: hidden; background:rgb(21, 23, 25); margin: 10px;">
       {% if tweet.photo %}
           <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet Image" style="height: 200px; object-fit: cover;">
       {% endif %}
       
       <div class="card-body">
         <h5 class="card-title" style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
-          <span style="font-weight: bold; color: #007bff; margin-right: 10px;">{{ tweet.user.username }}</span>
-          <span style="color: #6c757d; font-size: 0.9rem;">{{ tweet.created_at }}</span>
+          <span style="font-weight: bold; color:rgb(106, 167, 233); margin-right: 10px;">{{ tweet.user.username }}</span>
+          <span style="color:rgb(147, 149, 151); font-size: 0.9rem;">{{ tweet.created_at }}</span>
         </h5>        
         
-        <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color:rgb(212, 214, 217);">
           {{ tweet.text }}
         </p>
         {% if tweet.user == user %}

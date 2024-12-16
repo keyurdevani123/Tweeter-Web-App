@@ -77,3 +77,8 @@ def tweet_search(request):
     query = request.GET.get('query', '').strip()
     tweets = Tweet.objects.filter(Q(text__icontains=query)) if query else []
     return render(request, 'tweet_search.html', {'tweets': tweets, 'query': query})
+
+@login_required
+def user_details(request):
+    return render(request, 'user_details.html', {'user': request.user})
+

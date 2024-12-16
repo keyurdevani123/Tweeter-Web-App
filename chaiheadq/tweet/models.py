@@ -7,11 +7,12 @@ from django.conf import settings
 # User= get_user_model()
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     phone_number= models.CharField(max_length=100,default='')
     user_bio = models.CharField(max_length=50,default='')
     user_profile_image= models.ImageField(upload_to="profile",default='')
 
-    REQUIRED_FIELDS=[]
+    REQUIRED_FIELDS=['email']
     USERNAME_FIELD = 'username' 
 
 class Tweet(models.Model):
@@ -23,3 +24,5 @@ class Tweet(models.Model):
     
     def __str__(self):
         return f'{self.user.username} - {self.text[:10]}'
+
+

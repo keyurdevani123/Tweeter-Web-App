@@ -7,11 +7,11 @@
     {% if tweets %}
         <div class="container row gap-3">
             {% for tweet in tweets %}
-            <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem;background:rgb(21, 23, 25);">
                 {% if tweet.photo %}
                     <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet photo">
                 {% endif %}
-                <div class="card-body">
+                <div class="card-body text-white">
                     <h5 class="card-title">
                         <span style="margin-right: 10px;">{{ tweet.user.username }}</span>
                         <span>{{ tweet.created_at }}</span>

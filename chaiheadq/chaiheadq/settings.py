@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tweet',
+    'django_browser_reload'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'livereload.middleware.LiveReloadScript',
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'chaiheadq.urls'
@@ -137,3 +140,17 @@ AUTH_USER_MODEL = 'tweet.CustomUser'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+
+#email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'devanikeyur19@gmail.com'
+EMAIL_HOST_PASSWORD = 'owbk cems quoa dvie'
+
+# Default from email (used if `from_email` is not specified in the view)
+DEFAULT_FROM_EMAIL = 'devanikeyur19@gmail.com'
+
+EMAIL = EMAIL_HOST_USER
