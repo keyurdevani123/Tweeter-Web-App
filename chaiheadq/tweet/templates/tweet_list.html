@@ -1,35 +1,107 @@
 {% extends "layout.html" %}
 
-{% block title %}Chai and tweet{% endblock %}
+{% block title %}{% endblock %}
 
 {% block content %}
-    <h1 class="text-center text-green">Chai Headquarter</h1>
-    
-{% comment %} <a href="{% url 'tweet_create' %}" class="btn btn-primary">Create a tweet</a> {% endcomment %}
-<div class="container row gap-3)">
-  {% for tweet in tweets %}
-  <div class="card" style="width: 19rem; height: auto; overflow: hidden; background:rgb(21, 23, 25); margin: 10px;">
-      {% if tweet.photo %}
-          <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet Image" style="height: 200px; object-fit: cover;">
-      {% endif %}
-      
-      <div class="card-body">
-        <h5 class="card-title" style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
-          <span style="font-weight: bold; color:rgb(106, 167, 233); margin-right: 10px;">{{ tweet.user.username }}</span>
-          <span style="color:rgb(147, 149, 151); font-size: 0.9rem;">{{ tweet.created_at }}</span>
-        </h5>        
+<h1 class="text-center" style="color: #6aa7e9;">Tweet Headquarter</h1>
+
+<div class="container row gap-3">
+    {% for tweet in tweets %}
+    <div class="card" style="width: 19rem; background: #151719; margin: 10px; border-radius: 8px; overflow: hidden;">
         
-        <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color:rgb(212, 214, 217);">
-          {{ tweet.text }}
-        </p>
-        {% if tweet.user == user %}
-        <a href="{% url 'tweet_edit' tweet.id %}" class="btn btn-secondary btn-sm">Edit</a>
-        <a href="{% url 'tweet_delete' tweet.id %}" class="btn btn-danger btn-sm">Delete</a>
+        {% if tweet.photo %}
+            <!-- Wrap the image in an anchor tag for the clickable functionality -->
+            <a href="{% url 'tweet_view' tweet.id %}">
+                <img src="{{ tweet.photo.url }}" class="card-img-top" alt="Tweet Image" style="height: 200px; object-fit: cover; border-bottom: 1px solid #333;">
+            </a>
         {% endif %}
-        <a href="{% url 'tweet_view' tweet.id %}" class="btn btn-primary btn-sm">View</a>
-      </div>
-  </div>
-  {% endfor %}
+
+        <div class="card-body" style="padding: 15px;">
+            <h5 class="card-title" style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem;">
+                <span style="font-weight: bold; color: #6aa7e9; margin-right: 60px;">
+                    <a href="{% url 'user_details' tweet.user.id %}" style="color: #6aa7e9; text-decoration: none; font-size: 1rem;">{{ tweet.user.username }}</a>
+                </span>
+                <span style="color: #939595; font-size: 0.9rem; ">
+                    {{ tweet.created_at|date:"F j, Y, g:i a" }}
+                </span>
+            </h5>        
+
+            <p class="card-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #d4d6d9;">
+                {{ tweet.text }}
+            </p>
+            
+            <div class="d-flex justify-content-between align-items-center" style="color: #8b98a5; font-size: 14px; margin-top: 10px;">
+                <!-- Like Button -->
+                <span style="display: flex; align-items: center; gap: 5px;">
+                    <a href="{% url 'like_tweet' tweet.id %}" class="like-link" data-tweet-id="{{ tweet.id }}" style="text-decoration: none;">
+                        <i id="like-icon-{{ tweet.id }}" class="fa-solid fa-heart" style="cursor: pointer; color: {% if user in tweet.likes.all %}red{% else %}gray{% endif %};"></i>
+                    </a>
+                    <span id="like-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.likes_count }}</span>
+                </span>
+            
+                <!-- Comment Button -->
+                <span style="display: flex; align-items: center; gap: 5px;">
+                    <a href="{% url 'tweet_comments' tweet.id %}" style="text-decoration: none; color: inherit;">
+                        <i class="fa fa-comment" style="color: #8b98a5;"></i>
+                        <span id="comment-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.comments_count }}</span>
+                    </a>
+                </span>
+
+                <!-- Views Button -->
+                <span style="display: flex; align-items: center; gap: 5px;">
+                    <i class="fa fa-eye" style="color: #8b98a5;"></i>
+                    <span id="view-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.views }}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 </div>
- 
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const likeLinks = document.querySelectorAll(".like-link");
+
+        likeLinks.forEach(link => {
+            link.addEventListener("click", event => {
+                event.preventDefault();
+
+                const tweetId = link.dataset.tweetId;
+                const url = link.getAttribute("href");
+
+                fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/json"
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const likeIcon = document.getElementById(`like-icon-${tweetId}`);
+                    const likeCount = document.getElementById(`like-count-${tweetId}`);
+
+                    if (data.liked) {
+                        likeIcon.classList.remove("text-muted");
+                        likeIcon.classList.add("text-danger");
+                    } else {
+                        likeIcon.classList.remove("text-danger");
+                        likeIcon.classList.add("text-muted");
+                    }
+
+                    likeCount.textContent = data.likes_count;
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Something went wrong! Please try again.");
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}
