@@ -1,0 +1,59 @@
+<!-- Other User Profile Template -->
+{% extends "layout.html" %}
+
+{% block title %}Profile - {{ target_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto;">
+    <div class="card" style="border-radius: 15px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none; padding: 30px;">
+        <div class="d-flex align-items-center justify-content-center flex-column flex-sm-row py-4">
+            <!-- Profile Image -->
+            <div class="text-center text-sm-start">
+                <img src="{% if target_user.user_profile_image %}{{ target_user.user_profile_image.url }}{% else %}/static/default_profile.png{% endif %}" 
+                     alt="Profile Image"
+                     class="rounded-circle"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd; margin-bottom: 20px;">
+                <h4 class="text-dark font-weight-bold mb-3">{{ target_user.username }}</h4>
+            </div>
+
+            <!-- Followers & Following Counters -->
+            <div class="d-flex justify-content-between w-100 mt-3 mt-sm-0 px-4">
+                <div class="text-center" style="flex: 1;">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ target_user.followers_count }}</p>
+                    <small style="color: #0d6efd;">Followers</small>
+                </div>
+                <div class="text-center" style="flex: 1;">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ target_user.following_count }}</p>
+                    <small style="color: #0d6efd;">Following</small>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
+
+        <!-- Follow/Unfollow Button -->
+        <div class="text-center mb-4">
+            <form action="{% url 'follow' target_user.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}" style="padding: 10px 20px; font-size: 1rem;">
+                    {% if is_following %}Unfollow{% else %}Follow{% endif %}
+                </button>
+            </form>
+        </div>
+
+        <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
+
+        <!-- User Information -->
+        <div style="font-size: 1rem; color: #495057; line-height: 1.6; margin-bottom: 20px;">
+            <p class="mb-3">
+                <strong>Name:</strong> 
+                <span style="color: #0d6efd;">{{ target_user.first_name }} {{ target_user.last_name }}</span>
+            </p>
+            <p class="mb-3">
+                <strong>Joined:</strong> 
+                <span style="color: #0d6efd;">{{ target_user.date_joined|date:"F j, Y" }}</span>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

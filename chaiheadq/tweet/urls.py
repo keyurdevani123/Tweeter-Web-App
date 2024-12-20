@@ -16,7 +16,10 @@ urlpatterns = [
     path('user/details/<int:user_id>/', views.user_details, name='user_details'),
 
     # Connect user functionality
-    path('<int:user_id>/follow', views.follow, name='follow'),
+    path('follow/<int:user_id>/', views.follow, name='follow'),
+    path("notifications/", views.notifications_page, name="notifications_page"),
+    path("notifications/get/", views.get_notifications, name="get_notifications"),
+    path('notifications/mark_read/<int:notification_id>/', views.mark_notification_as_read, name="mark_notification_as_read"),
 
     # Reset password URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

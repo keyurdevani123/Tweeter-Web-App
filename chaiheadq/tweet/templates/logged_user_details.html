@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}My Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 50px auto;">
+    <div class="card" style="border-radius: 15px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none; padding: 30px;">
+        <div class="d-flex align-items-center justify-content-center flex-column flex-sm-row py-4">
+            <!-- Profile Image -->
+            <div class="text-center text-sm-start me-sm-4 mb-4 mb-sm-0">
+                <a href="{% if user.user_profile_image %}{{ user.user_profile_image.url }}{% else %}/static/default_profile.png{% endif %}" target="_blank">
+                    <img src="{% if user.user_profile_image %}{{ user.user_profile_image.url }}{% else %}/static/default_profile.png{% endif %}" 
+                        alt="Profile Image"
+                        class="rounded-circle"
+                        style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd;">
+                </a>
+                <h4 class="text-dark font-weight-bold mt-3">{{ user.username }}</h4>
+            </div>
+
+            <!-- Followers & Following Counters -->
+            <div class="d-flex justify-content-between w-100 mt-3 mt-sm-0 px-4">
+                <div class="text-center" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#followersModal">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ followers_count }}</p>
+                    <small style="color: #0d6efd;">Followers</small>
+                </div>
+                <div class="text-center" style="flex: 1;" data-bs-toggle="modal" data-bs-target="#followingModal">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ following_count }}</p>
+                    <small style="color: #0d6efd;">Following</small>
+                </div>
+            </div>
+        </div>
+
+        <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
+
+        <!-- User Information -->
+        <div style="font-size: 1rem; color: #495057; line-height: 1.6; margin-bottom: 20px;">
+            <p class="mb-3">
+                <strong>Name:</strong> 
+                <span style="color: #0d6efd;">{{ user.first_name }} {{ user.last_name }}</span>
+            </p>
+            <p class="mb-3">
+                <strong>Joined:</strong> 
+                <span style="color: #0d6efd;">{{ user.date_joined|date:"F j, Y" }}</span>
+            </p>
+        </div>
+
+        <!-- Logout Button -->
+        <div class="text-center">
+            <form action="{% url 'logout' %}" method="post" style="display: inline-block; margin: 0;" class="mb-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger" style="padding: 10px 20px; font-size: 1rem; font-weight: 500;">
+                    Logout
+
+                </button>
+            </form>
+            <a href="/" class="btn btn-primary" style="padding: 10px 20px; font-size: 1rem; font-weight: 500;">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,80 +1,108 @@
 {% extends "layout.html" %}
 
-{% block title %}User Details{% endblock %}
+{% block title %}User Profile - {{ user.username }}{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 600px; margin: 50px auto;">
-    <div class="card" style="padding: 30px; border-radius: 15px; background-color: #f8f9fa; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none;">
-        <div class="text-center">
-            <img src="{% if user.user_profile_image %}{{ user.user_profile_image.url }}{% else %}/static/default_profile.png{% endif %}" 
-                 alt="" 
-                 class="rounded-circle"
-                 style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd; margin-bottom: 15px;">
-            <h2 style="color: #212529; font-weight: 700; margin-bottom: 10px;">{{ user.username }}</h2>
+<div class="container" style="max-width: 800px; margin: 50px auto;">
+    <div class="card" style="border-radius: 15px; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: none; padding: 30px;">
+        <div class="d-flex align-items-center justify-content-center flex-column flex-sm-row py-4">
+            <!-- Profile Image -->
+            <div class="text-center text-sm-start">
+                <img src="{% if user.user_profile_image %}{{ user.user_profile_image.url }}{% else %}/static/default_profile.png{% endif %}" 
+                     alt="Profile Image"
+                     class="rounded-circle"
+                     style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #0d6efd; margin-bottom: 20px;">
+                <h4 class="text-dark font-weight-bold mb-3">{{ user.username }}</h4>
+            </div>
+
+            <!-- Followers & Following Counters -->
+            <div class="d-flex justify-content-between w-100 mt-3 mt-sm-0 px-4">
+                <div class="text-center" style="flex: 1;">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ followers_count }}</p>
+                    <small style="color: #0d6efd;">Followers</small>
+                </div>
+                <div class="text-center" style="flex: 1;">
+                    <p style="font-size: 1.1rem; color: #212529; font-weight: bold;">{{ following_count }}</p>
+                    <small style="color: #0d6efd;">Following</small>
+                </div>
+            </div>
         </div>
+
+        <div class="text-center mb-4">
+            <a href="#" class="btn btn-outline-primary btn-sm" style="padding: 10px 20px;">Edit Profile</a>
+            <a href="https://whatsapp.com/share?url={{ request.build_absolute_uri }}" 
+               class="btn btn-outline-success btn-sm" style="padding: 10px 20px;">Share Profile</a>
+        </div>
+
         <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
-        <div style="font-size: 1rem; color: #495057; line-height: 1.6;">
-            <p style="margin-bottom: 15px;">
-                <strong>Email:</strong>
-                <span style="color: #0d6efd;">{{ user.email }}</span>
+
+        <!-- User Information -->
+        <div style="font-size: 1rem; color: #495057; line-height: 1.6; margin-bottom: 20px;">
+            <p class="mb-3">
+                <strong>Name:</strong> 
+                <span style="color: #0d6efd;">{{ user.first_name }} {{ user.last_name }}</span>
             </p>
-            <p style="margin-bottom: 15px;">
-                <strong>First Name:</strong>
-                <span style="color: #0d6efd;">{{ user.first_name }}</span>
-            </p>
-            <p style="margin-bottom: 15px;">
-                <strong>Last Name:</strong>
-                <span style="color: #0d6efd;">{{ user.last_name }}</span>
-            </p>
-            <p style="margin-bottom: 0;">
-                <strong>Joined On:</strong>
+            <p class="mb-3">
+                <strong>Joined:</strong> 
                 <span style="color: #0d6efd;">{{ user.date_joined|date:"F j, Y" }}</span>
             </p>
         </div>
-        <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
-        <div>
-            <p><strong>Followers:</strong> {{ followers_count }}</p>
-            <p><strong>Following:</strong> {{ following_count }}</p>
-        </div>
 
-        {% if not is_self %}
-            <!-- Show Follow/Unfollow Button -->
-            {% if is_following %}
-                <form action="{% url 'follow' user.id %}" method="post" style="text-align: center;">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="btn btn-danger" 
-                            style="padding: 10px 20px; font-size: 1rem; font-weight: 500; margin-right: 10px;">
-                        Unfollow
-                    </button>
-                </form>
-            {% else %}
-                <form action="{% url 'follow' user.id %}" method="post" style="text-align: center;">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="btn btn-primary" 
-                            style="padding: 10px 20px; font-size: 1rem; font-weight: 500; margin-left: 10px;">
-                        Follow
-                    </button>
-                </form>
-            {% endif %}
-        {% else %}
-            <!-- Show Logout and Home Buttons for Own Profile -->
-            <div class="text-center">
-                <form action="{% url 'logout' %}" method="post" style="display: inline-block; margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" 
-                            class="btn btn-danger" 
-                            style="padding: 10px 20px; font-size: 1rem; font-weight: 500; margin-right: 10px;">
-                        Logout
-                    </button>
-                </form>
-                <a href="/" class="btn btn-primary" 
-                   style="padding: 10px 20px; font-size: 1rem; font-weight: 500; margin-left: 10px;">
-                    Back to Home
-                </a>
-            </div>
-        {% endif %}
+        <hr style="border: 1px solid #e9ecef; margin: 20px 0;">
+
+        <!-- Follow/Unfollow Button -->
+{% if not is_self %}
+<form action="{% url 'follow' user.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if is_following %}btn-danger{% else %}btn-primary{% endif %}">
+        {% if is_following %}Unfollow{% else %}Follow{% endif %}
+    </button>
+</form>
+
+{% else %}
+<!-- Logout and Home for Own Profile -->
+<div class="text-center">
+    <form action="{% url 'logout' %}" method="post" style="display: inline-block; margin: 0;" class="mb-3">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger" style="padding: 10px 20px; font-size: 1rem; font-weight: 500; margin-right: 10px;">
+            Logout
+        </button>
+    </form>
+    <a href="/" class="btn btn-primary" style="padding: 10px 20px; font-size: 1rem; font-weight: 500;">
+        Back to Home
+    </a>
+</div>
+{% endif %}
     </div>
 </div>
+<script>
+    document.querySelectorAll('.follow-button').forEach(button => {
+        button.addEventListener('click', event => {
+            event.preventDefault();
+            const url = button.getAttribute('data-url');
+    
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then(data => {
+                if (data.is_following) {
+                    button.textContent = 'Unfollow';
+                    button.classList.remove('btn-primary');
+                    button.classList.add('btn-danger');
+                } else {
+                    button.textContent = 'Follow';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-primary');
+                }
+            }).catch(error => console.error('Error:', error));
+        });
+    });
+    
+</script>    
 {% endblock %}

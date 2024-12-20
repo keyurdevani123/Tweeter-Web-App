@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Notifications</h2>
+    <ul class="list-group">
+        {% for notification in notifications %}
+            <li class="list-group-item" id="notification-{{ notification.id }}">
+                <p>{{ notification.message }}</p>
+                {% if notification.related_tweet %}
+                    <a href="{% url 'tweet_view' notification.related_tweet.id %}">View Tweet</a>
+                {% endif %}
+                <small class="text-muted">{{ notification.created_at|date:"Y-m-d H:i:s" }}</small>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No notifications available.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
