@@ -17,9 +17,16 @@ urlpatterns = [
 
     # Connect user functionality
     path('follow/<int:user_id>/', views.follow, name='follow'),
+    
+    # Notifications
     path("notifications/", views.notifications_page, name="notifications_page"),
     path("notifications/get/", views.get_notifications, name="get_notifications"),
-    path('notifications/mark_read/<int:notification_id>/', views.mark_notification_as_read, name="mark_notification_as_read"),
+    path('notifications/mark_all_read/<int:notification_id>/', views.mark_all_notifications_as_read, name="mark_all_notifications_as_read"),
+
+    # Message-related paths
+    path('messages/', views.messages_page, name='messages_page'),
+    # path('send_message/<int:recipient_id>/', views.send_message, name='send_message'),
+    path('messages/<int:recipient_id>/', views.get_messages, name='get_messages'),
 
     # Reset password URLs
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),

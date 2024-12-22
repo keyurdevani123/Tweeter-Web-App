@@ -76,15 +76,34 @@ class Comment(models.Model):
         return f'Comment by {self.user.username} on {self.tweet.text[:50]}'
 
 
+class Message(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_messages")
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="received_messages")
+    content = models.TextField()
+    created_at = models.DateTimeField(default=now)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Message from {self.sender.username} to {self.recipient.username}"
+
+
 class Notification(models.Model):
+    NOTIFICATION_TYPES = (('like', 'Like'), ('follow', 'Follow'), ('message', 'Message'), ('tweet', 'Tweet'), ('comment', 'Comment'))
+    
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notifications")
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sent_notifications", null=True, blank=True)
+    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES, default='message')
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=now)
-    related_tweet = models.ForeignKey(Tweet, on_delete=models.CASCADE, null=True, blank=True)
+    related_tweet = models.ForeignKey("Tweet", on_delete=models.CASCADE, null=True, blank=True)
+    related_message = models.ForeignKey("Message", on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
-        return f"Notification for {self.user.username}: {self.message[:50]}"
+        return f"{self.get_notification_type_display()} notification for {self.user.username}"
 
     class Meta:
         ordering = ['-created_at']
+
+
+

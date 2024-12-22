@@ -1,5 +1,5 @@
 from django import forms
-from .models import Tweet, Comment
+from .models import Tweet, Comment, Message
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
 #from django.conf import settings
@@ -25,6 +25,15 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
         widgets = {
             'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 5, 'placeholder': 'Write your comment here...'}),
+        }
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your message here...'})
         }
 
 # class UserRegistrationForm(UserCreationForm):

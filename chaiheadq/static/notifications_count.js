@@ -1,23 +1,18 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const unreadCount = document.getElementById("unread-count");
 
-    function updateUnreadCount() {
+    const fetchUnreadCount = () => {
         fetch("/notifications/get/")
-            .then((response) => response.json())
-            .then((data) => {
-                const count = data.unread_count;
-                if (count > 0) {
-                    unreadCount.style.display = "inline";
-                    unreadCount.textContent = count;
-                } else {
-                    unreadCount.style.display = "none";
-                }
-            });
-    }
+            .then(response => response.json())
+            .then(data => {
+                const count = data.notifications_count || 0;
+                unreadCount.style.display = count > 0 ? "inline" : "none";
+                unreadCount.textContent = count;
+            })
+            .catch(console.error);
+    };
 
-    // Fetch the count initially
-    updateUnreadCount();
-
-    // Optional: Poll for updates every 30 seconds
-    setInterval(updateUnreadCount, 30000);
+    fetchUnreadCount();
+    setInterval(fetchUnreadCount, 120000); // Refresh every 2 minutes
+    //notificationLink.addEventListener("click", markAllAsRead);
 });

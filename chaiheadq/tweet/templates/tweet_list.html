@@ -33,22 +33,34 @@
                         </p>
                     </div>
 
-
                     <div class="d-flex justify-content-between align-items-center" style="color:rgb(103, 107, 110); font-size: 14px; margin-top: 10px;">
                         <!-- Like Button -->
                         <span style="display: flex; align-items: center; gap: 5px;">
-                            <a href="{% url 'like_tweet' tweet.id %}" class="like-link" data-tweet-id="{{ tweet.id }}" style="text-decoration: none;">
-                                <i id="like-icon-{{ tweet.id }}" class="fa-solid fa-heart" style="cursor: pointer; color: {% if user in tweet.likes.all %}red{% else %}gray{% endif %};"></i>
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'like_tweet' tweet.id %}" class="like-link" data-tweet-id="{{ tweet.id }}" style="text-decoration: none;">
+                                    <i id="like-icon-{{ tweet.id }}" class="fa-solid fa-heart" style="cursor: pointer; color: {% if tweet.liked_by_user %}red{% else %}gray{% endif %};"></i>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login' %}" style="text-decoration: none; cursor: pointer;">
+                                    <i class="fa-solid fa-heart" style="color:gray;"></i>
+                                </a>
+                            {% endif %}
                             <span id="like-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.likes_count }}</span>
                         </span>
                     
                         <!-- Comment Button -->
                         <span style="display: flex; align-items: center; gap: 5px;">
-                            <a href="{% url 'tweet_comments' tweet.id %}" style="text-decoration: none; color: inherit;">
-                                <i class="fa fa-comment" style="color:rgb(128, 134, 139);"></i>
-                                <span id="comment-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.comments_count }}</span>
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'tweet_comments' tweet.id %}" style="text-decoration: none; color: inherit;">
+                                    <i class="fa fa-comment" style="color:rgb(128, 134, 139);"></i>
+                                    <span id="comment-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.comments_count }}</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'login' %}" style="text-decoration: none; color: inherit;">
+                                    <i class="fa fa-comment" style="color:rgb(128, 134, 139);"></i>
+                                    <span id="comment-count-{{ tweet.id }}" style="font-weight: bold;">{{ tweet.comments_count }}</span>
+                                </a>
+                            {% endif %}
                         </span>
 
                         <!-- Views Button -->
@@ -65,49 +77,28 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const likeLinks = document.querySelectorAll(".like-link");
-
-        likeLinks.forEach(link => {
-            link.addEventListener("click", event => {
-                event.preventDefault();
-
-                const tweetId = link.dataset.tweetId;
-                const url = link.getAttribute("href");
-
-                fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "X-CSRFToken": "{{ csrf_token }}",
-                        "Content-Type": "application/json"
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
+    document.querySelectorAll('.like-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();  // Prevent the default link behavior
+            const tweetId = link.getAttribute('data-tweet-id');
+            const icon = document.getElementById('like-icon-' + tweetId);
+            const count = document.getElementById('like-count-' + tweetId);
+    
+            fetch(link.href)
+                .then(response => response.json())
                 .then(data => {
-                    const likeIcon = document.getElementById(`like-icon-${tweetId}`);
-                    const likeCount = document.getElementById(`like-count-${tweetId}`);
-
+                    // Update the like button color
                     if (data.liked) {
-                        likeIcon.classList.remove("text-muted");
-                        likeIcon.classList.add("text-danger");
+                        icon.style.color = 'red';  // User liked the tweet
                     } else {
-                        likeIcon.classList.remove("text-danger");
-                        likeIcon.classList.add("text-muted");
+                        icon.style.color = 'gray';  // User unliked the tweet
                     }
-
-                    likeCount.textContent = data.likes_count;
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Something went wrong! Please try again.");
+    
+                    // Update the like count
+                    count.textContent = data.likes_count;
                 });
-            });
         });
     });
 </script>
+
 {% endblock %}

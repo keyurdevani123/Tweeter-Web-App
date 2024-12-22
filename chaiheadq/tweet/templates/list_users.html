@@ -1,0 +1,14 @@
+{% comment %} {% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Select a User too Start a Convrsation</h2>
+    <ul class="list-group">
+        {% for user in users %}
+            <li class="list-group-item">
+                <a href="{% url 'get_messages' user.id %}">{{ user.username }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %} {% endcomment %}

@@ -14,12 +14,6 @@ searchInput.addEventListener('input', function() {
                     data.results.forEach(user => {
                         const div = document.createElement('div');
                         div.classList.add('user-list-item');
-                        div.style.padding = '10px';
-                        div.style.cursor = 'pointer';
-                        div.style.borderBottom = '1px solid #ddd';
-                        div.style.display = 'flex';
-                        div.style.alignItems = 'center';
-                        div.style.marginBottom = '5px';
                         div.innerHTML = `
                             <img src="${user.profile_image}" alt="${user.username}" class="rounded-circle" style="width: 30px; height: 30px; margin-right: 10px;">
                             <span style="font-size: 14px; color: #333;">${user.username}</span>

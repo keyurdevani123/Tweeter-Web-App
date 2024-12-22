@@ -1,7 +1,7 @@
 
     body {
         background-color: rgb(179, 214, 253); /* Light theme */
-        color: #212529;
+        color: #232527;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
@@ -11,7 +11,7 @@
         left: 0;
         height: 100%;
         width: 240px;
-        background-color: #ffffff;
+        background-color: #f8f6f6;
         border-right: 1px solid #dee2e6;
         padding: 20px 15px;
         overflow-y: auto;
@@ -19,7 +19,7 @@
 
     .sidebar a {
         display: block;
-        color: #212529;
+        color: #222527;
         padding: 12px 20px;
         font-size: 1rem;
         border-radius: 5px;
@@ -45,8 +45,8 @@
     width: 100%;
     padding: 10px;
     text-align: center;
-    {% comment %} background-color: #f1f1f1;
-    border-top: 1px solid #dee2e6; {% endcomment %}
+    background-color: #f1f1f1;
+    border-top: 1px solid #dee2e6;
 }
 
 .profile-section .profile-link {
@@ -77,29 +77,75 @@
     color: #007bff;
 }
         
-        
-
+/* Styling for the search input */
 .search-input {
-    max-width: 230px;
+    max-width: 300px;
     border-radius: 25px;
     padding-left: 15px;
-    margin-left: 880px;
+    margin-left: auto;  
+    margin-right: 25px;
+    display: block;
+    transition: all 0.3s ease;
 }
 
-.user-list {
+.search-input:focus {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Styling for the user search results list */
+#user-list {
     display: none;
     position: absolute;
-    top: 60px;
-    right: 15px;
-    background-color: #ffffff;
+    top: 74px;
+    right: 43px;
+    background: #fff;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 300px;
     padding: 10px;
     border-radius: 5px;
     z-index: 1050;
-    width: 300px;
     max-height: 300px;
     overflow-y: auto;
+    margin-top: 5px;
 }
+
+/* Show the user list when it has results */
+#user-list.show {
+    display: block;
+}
+
+/* Styling for each user list item */
+.user-list-item {
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-list-item:hover {
+    background-color: #f9f9f9;
+}
+
+.user-list-item img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-list-item span {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    text-transform: capitalize;
+}
+
 
         /* Responsive styles */
 @media (max-width: 768px) {

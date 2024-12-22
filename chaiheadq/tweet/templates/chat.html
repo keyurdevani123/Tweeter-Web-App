@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- CSS for Chat -->
+<!-- CSS for Chat -->
+<style>
+    /* Overall Chat Container (Rectangular box style) */
+    .chat-box {
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 4px; /* Rectangular shape with sharp corners */
+        padding: 20px;
+        height: 400px; /* Adjusted height */
+        overflow-y: auto;
+        margin-bottom: 20px;
+    }
+
+    /* Container for each message */
+    .message-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Message Bubbles (Rectangular, no rounded edges) */
+    .message-bubble {
+        max-width: 80%;
+        padding: 12px;
+        font-size: 14px;
+        line-height: 1.4;
+        position: relative;
+        margin-bottom: 10px;
+        border-radius: 4px; /* Rectangular shape for bubbles */
+    }
+
+    /* Sender's Message Style */
+    .message-bubble.sender {
+        background-color:rgb(76, 221, 136);
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 0;
+    }
+
+    /* Recipient's Message Style */
+    .message-bubble.recipient {
+        background-color: #f1f1f1;
+        color: #333;
+        align-self: flex-start;
+        border-bottom-left-radius: 0;
+    }
+
+    /* Message timestamp */
+    .message-time {
+        font-size: 10px;
+        position: absolute;
+        bottom: 1px;
+        right: 10px;
+        color: #6c757d;
+    }
+
+    /* Input Area */
+    #chat-input {
+        border-radius: 20px; /* Rectangular input field */
+        padding: 0px;
+        top:50px;
+        margin-right: 10px;
+        font-size: 14px;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+    }
+
+    #chat-input:focus {
+        background-color: #ffffff;
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    /* Send Button */
+    .send-btn {
+        border-radius: 20px; /* Rectangular button */
+        background-color:rgb(41, 138, 241);
+        padding: 8px 10px;
+        font-size: 18px;
+        top:50px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-left: 5px;
+        align-self: center;
+    }
+
+    .send-btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Input Area Container */
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        justify-content: space-between;
+    }
+
+    /* For Mobile Responsiveness */
+    @media (max-width: 576px) {
+        .chat-box {
+            height: 300px;
+        }
+
+        .message-bubble {
+            max-width: 90%;
+        }
+    }
+
+    /* Date Separator */
+    .message-date-separator .badge {
+        background-color: #e9ecef;
+        color: #333;
+        font-size: 13px;
+        text-transform: capitalize;
+    }
+</style>
+
+<div class="container mt-4">
+    <h3 class="mb-4 text-center">Chat with {{ recipient.username }}</h3>
+
+    <!-- Chat Box -->
+    <div class="chat-box border rounded p-4">
+        {% for message in messages %}
+            <div class="message-container mb-3">
+                {% if message.sender == request.user %}
+                    <!-- Sender's Message -->
+                    <div class="message-bubble sender">
+                        <span>{{ message.content }}</span>
+                        <small class="message-time">{{ message.created_at|date:"H:i" }}</small>
+                    </div>
+                {% else %}
+                    <!-- Recipient's Message -->
+                    <div class="message-bubble recipient">
+                        <span>{{ message.content }}</span>
+                        <small class="message-time">{{ message.created_at|date:"H:i" }}</small>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Input Box -->
+    <form id="chat-form" method="POST" class="mt-3">
+        {% csrf_token %}
+        <div class="input-group">
+            <textarea name="content" id="chat-input" class="form-control" rows="2" placeholder="Type a message..." style="resize: none; padding-top:10px;"></textarea>
+            <button type="submit" class="btn btn-primary send-btn">Send</button>
+        </div>
+    </form>
+</div>
+
+
+<!-- JavaScript for Auto-Scroll and AJAX -->
+<script>
+    const chatBox = document.querySelector('.chat-box');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+
+    // Auto-scroll to the bottom of the chat box
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    // Handle form submission
+    chatForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(chatForm);
+
+        fetch('', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Append the new message to the chat box
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('text-end', 'mb-2');
+            messageDiv.innerHTML = `
+                <span class="badge bg-primary text-light">${data.message}</span>
+                <small class="text-muted d-block">${data.created_at}</small>
+            `;
+            chatBox.appendChild(messageDiv);
+
+            // Clear the input field and scroll to the bottom
+            chatInput.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}
